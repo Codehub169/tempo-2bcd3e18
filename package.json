@@ -1,0 +1,19 @@
+{
+  "name": "eye-clinic-website-root",
+  "version": "1.0.0",
+  "description": "Root package for the Eye Clinic India website, managing client and server workspaces and scripts.",
+  "private": true,
+  "scripts": {
+    "install:server": "cd server && npm install --silent",
+    "install:client": "cd client && npm install --silent",
+    "install:all": "npm install --silent && npm run install:server && npm run install:client",
+    "client:dev": "cd client && npm start",
+    "server:dev": "cd server && npm run dev",
+    "dev": "concurrently \"npm:server:dev\" \"npm:client:dev\"",
+    "build:client": "cd client && npm run build",
+    "start": "echo \"Starting application in production-like mode...\" && npm run build:client && cd server && PORT=9000 npm start"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
