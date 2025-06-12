@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   FormControl,
@@ -16,14 +16,14 @@ import {
 } from '@chakra-ui/react';
 // import api from '../services/api'; // Assuming api.js will be created with submitAppointment function
 
-const AppointmentForm = () => {
+const AppointmentForm = ({ services: propServices, doctors: propDoctors, preselectedDoctorId, preselectedServiceId }) => {
   const toast = useToast();
   const [formData, setFormData] = useState({
     patientName: '',
     email: '',
     phone: '',
-    service: '',
-    preferredDoctor: '',
+    service: preselectedServiceId || '',
+    preferredDoctor: preselectedDoctorId || '',
     preferredDate: '',
     preferredTime: '',
     reason: '',
@@ -31,10 +31,24 @@ const AppointmentForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
+  // Use passed props for services and doctors, fallback to empty arrays if undefined
+  const services = propServices || [];
+  const doctors = propDoctors || [];
+
+  useEffect(() => {
+    // If preselected values are passed, update formData
+    // This is useful if props arrive after initial state is set, though constructor init is better
+    if (preselectedServiceId) {
+      setFormData(prev => ({ ...prev, service: preselectedServiceId }));
+    }
+    if (preselectedDoctorId) {
+      setFormData(prev => ({ ...prev, preferredDoctor: preselectedDoctorId }));
+    }
+  }, [preselectedServiceId, preselectedDoctorId]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    // Clear error for the field when user starts typing
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: null }));
     }
@@ -50,7 +64,7 @@ const AppointmentForm = () => {
     }
     if (!formData.phone.trim()) {
         newErrors.phone = 'Phone number is required.';
-    } else if (!/^(\+91[\-\s]?)?[0]?(91)?[789]\d{9}$/.test(formData.phone)) { // Indian phone validation (10 digits starting with 7,8,9, optional +91)
+    } else if (!/^(\+91[\-\s]?)?[0]?(91)?[789]\d{9}$/.test(formData.phone.replace(/\s/g, ''))) { 
         newErrors.phone = 'Please enter a valid 10-digit Indian mobile number.';
     }
     if (!formData.service) newErrors.service = 'Please select a service.';
@@ -77,13 +91,12 @@ const AppointmentForm = () => {
     setIsLoading(true);
     try {
       // const response = await api.submitAppointment(formData); // Uncomment when api.js is ready
-      // For now, simulate API call
       await new Promise(resolve => setTimeout(resolve, 1500)); 
-      console.log('Form submitted:', formData); // For development: log form data
+      console.log('Form submitted:', formData); 
 
       toast({
         title: 'Appointment Request Submitted.',
-        description: "We've received your request and will contact you shortly to confirm.",
+        description: "We\'ve received your request and will contact you shortly to confirm.",
         status: 'success',
         duration: 9000,
         isClosable: true,
@@ -101,7 +114,7 @@ const AppointmentForm = () => {
       });
       setErrors({});
     } catch (error) {
-      console.error('Submission error:', error); // For development: log error
+      console.error('Submission error:', error); 
       toast({
         title: 'Submission Failed.',
         description: error.response?.data?.message || 'An error occurred. Please try again later.',
@@ -113,26 +126,6 @@ const AppointmentForm = () => {
     }
     setIsLoading(false);
   };
-
-  const services = [
-    'Comprehensive Eye Exam',
-    'Cataract Surgery Consult',
-    'LASIK Consultation',
-    'Glaucoma Check-up',
-    'Pediatric Eye Care',
-    'Contact Lens Fitting',
-    'Diabetic Retinopathy Screening',
-    'Optical Services',
-    'Other',
-  ];
-
-  const doctors = [
-    // 'Any Available', // Handled by placeholder in Select
-    'Dr. Priya Sharma',
-    'Dr. Rohan Patel',
-    'Dr. Ananya Das',
-    'Dr. Vikram Singh',
-  ];
 
   return (
     <Box 
@@ -201,8 +194,8 @@ const AppointmentForm = () => {
               focusBorderColor="brand.primary"
             >
               {services.map((service) => (
-                <option key={service} value={service}>
-                  {service}
+                <option key={service.id || service.name} value={service.id || service.name}>
+                  {service.name}
                 </option>
               ))}
             </Select>
@@ -220,8 +213,8 @@ const AppointmentForm = () => {
               focusBorderColor="brand.primary"
             >
               {doctors.map((doctor) => (
-                <option key={doctor} value={doctor}>
-                  {doctor}
+                <option key={doctor.id || doctor.name} value={doctor.id || doctor.name}>
+                  {doctor.name}
                 </option>
               ))}
             </Select>
@@ -235,7 +228,7 @@ const AppointmentForm = () => {
               type="date"
               value={formData.preferredDate}
               onChange={handleChange}
-              min={new Date().toISOString().split('T')[0]} // Prevent selecting past dates
+              min={new Date().toISOString().split('T')[0]} 
               focusBorderColor="brand.primary"
             />
             {errors.preferredDate && <FormErrorMessage>{errors.preferredDate}</FormErrorMessage>}
@@ -273,7 +266,7 @@ const AppointmentForm = () => {
 
           <Button 
             type="submit" 
-            colorScheme="brand.primary" // Uses custom variant from theme.js
+            colorScheme="brand.primary"
             isLoading={isLoading}
             loadingText="Submitting..."
             size="lg"

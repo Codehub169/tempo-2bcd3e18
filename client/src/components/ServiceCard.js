@@ -10,30 +10,34 @@ import {
   LinkOverlay,
 } from '@chakra-ui/react';
 import { Link as RouterLink } from 'react-router-dom';
-import { FaEye, FaUserMd, FaChild, FaGlasses } from 'react-icons/fa'; // Example icons
+import { FaEye, FaUserMd, FaChild, FaGlasses, FaQuestionCircle } from 'react-icons/fa'; // Added FaQuestionCircle for default
 
 // Mapping of service IDs/names to icons (can be expanded)
 const serviceIcons = {
   'comprehensive-eye-exams': FaEye,
-  'cataract-surgery': FaUserMd, // Placeholder, can be more specific
-  'lasik-refractive-surgery': FaEye, // Placeholder
+  'cataract-surgery': FaUserMd,
+  'lasik-refractive-surgery': FaEye,
   'pediatric-eye-care': FaChild,
   'optical-services': FaGlasses,
-  'default': FaEye
+  'default': FaQuestionCircle // Changed to a more generic default icon
 };
 
 // Component to display a single service card
 const ServiceCard = ({ service }) => {
   // Destructure service properties with default fallbacks
   const {
-    id = 'default-service',
+    id = 'default-service-id', // Ensure unique default ID if multiple default cards are possible
     name = 'Service Name Placeholder',
     description = 'Detailed description of the service offered by the clinic. This will give users an idea of what to expect.',
-    iconKey = 'default', // Key to look up in serviceIcons map
-    linkTo = '/appointment', // Default link for the button
+    iconKey = 'default',
+    detailsLink, // Expecting this from backend if specific link is needed
   } = service;
 
-  const ServiceIcon = serviceIcons[iconKey] || serviceIcons['default'];
+  const ServiceIconComponent = serviceIcons[iconKey] || serviceIcons['default'];
+  const effectiveLink = detailsLink || (id !== 'default-service-id' ? `/services/${id}` : '#'); // Avoid dead link for placeholder
+  
+  // Button links to appointment page with serviceId, or general appointment page for default/placeholder
+  const buttonLinkTo = id !== 'default-service-id' ? `/appointment?serviceId=${id}` : '/appointment';
 
   return (
     <LinkBox 
@@ -42,7 +46,7 @@ const ServiceCard = ({ service }) => {
       borderWidth="1px"
       borderRadius="lg"
       boxShadow="md"
-      bg="white"
+      bg="white" // Uses bg.default implicitly via global styles or direct theme value
       transition="all 0.3s ease-in-out"
       _hover={{
         transform: 'translateY(-5px)',
@@ -56,26 +60,31 @@ const ServiceCard = ({ service }) => {
     >
       <VStack spacing={4} align={{ base: 'center', md: 'flex-start' }} flexGrow={1} justifyContent="space-between">
         <Box>
-          <Icon as={ServiceIcon} w={10} h={10} color="brand.secondary" mb={4} />
+          <Icon as={ServiceIconComponent} w={10} h={10} color="brand.secondary" mb={4} />
           <Heading as="h3" size="md" color="brand.primary" mb={2} fontFamily="heading">
-            <LinkOverlay as={RouterLink} to={`/services/${id}`}>
-                {name}
-            </LinkOverlay>
+            {effectiveLink !== '#' ? (
+                <LinkOverlay as={RouterLink} to={effectiveLink}>
+                    {name}
+                </LinkOverlay>
+            ) : (
+                name // Render name as plain text if no valid link
+            )}
           </Heading>
-          <Text fontSize="sm" color="gray.600" noOfLines={3} flexGrow={1} fontFamily="body">
+          <Text fontSize="sm" color="text.light" noOfLines={3} flexGrow={1} fontFamily="body">
             {description}
           </Text>
         </Box>
         
         <Button
           as={RouterLink}
-          to={linkTo === '/appointment' ? `/appointment?serviceId=${id}` : `/services/${id}`}
-          colorScheme="secondary"
+          to={buttonLinkTo}
+          colorScheme="brand.secondary"
           variant="outline"
           size="sm"
           fontFamily="body"
+          mt={4} // Added margin top for spacing
         >
-          Learn More
+          Learn More / Book
         </Button>
       </VStack>
     </LinkBox>

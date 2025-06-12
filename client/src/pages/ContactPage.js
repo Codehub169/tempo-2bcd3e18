@@ -20,7 +20,7 @@ import {
   useToast,
   Divider,
 } from '@chakra-ui/react';
-import { FaMapMarkerAlt, FaPhone, FaEnvelope, FaClock } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaPhone, FaEnvelope } from 'react-icons/fa'; // Removed FaClock
 import { getClinicInfo, submitContactForm } from '../services/api'; 
 
 const ContactPage = () => {
@@ -31,7 +31,9 @@ const ContactPage = () => {
     hours: [
       { days: 'Monday - Saturday', time: '9:00 AM - 7:00 PM' },
       { days: 'Sunday', time: 'Closed' },
-    ]
+    ],
+    hours_monday_saturday: '9:00 AM - 7:00 PM', 
+    hours_sunday: 'Closed',
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -51,7 +53,14 @@ const ContactPage = () => {
         setLoading(true);
         const data = await getClinicInfo();
         if (data) {
-            setClinicInfo(prev => ({ ...prev, ...data })); // Merge with defaults
+            const formattedData = {
+                ...data,
+                hours: [
+                    { days: 'Monday - Saturday', time: data.hours_monday_saturday || '9:00 AM - 7:00 PM'},
+                    { days: 'Sunday', time: data.hours_sunday || 'Closed'}
+                ]
+            };
+            setClinicInfo(prev => ({ ...prev, ...formattedData }));
         }
         setError(null);
       } catch (err) {
@@ -85,7 +94,7 @@ const ContactPage = () => {
     } catch (err) {
       toast({
         title: 'Submission Error',
-        description: err.message || 'Failed to send message. Please try again.',
+        description: err.response?.data?.message || err.message || 'Failed to send message. Please try again.',
         status: 'error',
         duration: 5000,
         isClosable: true,
@@ -96,21 +105,21 @@ const ContactPage = () => {
   };
 
   return (
-    <Box py={{ base: 8, md: 10 }} bg="brand.neutral.extralight">
+    <Box py={{ base: 8, md: 10 }} bg="bg.subtle">
       <Container maxW="container.xl">
         <VStack spacing={10} align="stretch">
           <Box textAlign="center">
             <Heading as="h1" size={{ base: "lg", md: "xl" }} color="brand.primary" mb={4}>
               Contact Us
             </Heading>
-            <Text fontSize={{ base: "md", md: "lg" }} color="brand.neutral.dark">
-              We're here to help. Reach out to us with any questions or to schedule an appointment.
+            <Text fontSize={{ base: "md", md: "lg" }} color="text.default">
+              We\'re here to help. Reach out to us with any questions or to schedule an appointment.
             </Text>
           </Box>
 
           {loading && (
             <Box display="flex" justifyContent="center" alignItems="center" minHeight="30vh">
-              <Spinner size="xl" color="brand.primary" thickness="4px" speed="0.65s" emptyColor="brand.neutral.light" />
+              <Spinner size="xl" color="brand.primary" thickness="4px" speed="0.65s" emptyColor="neutral.lightGray" />
             </Box>
           )}
 
@@ -127,7 +136,7 @@ const ContactPage = () => {
                 <Heading as="h3" size="lg" color="brand.primary">Clinic Information</Heading>
                 <HStack align="start">
                   <Icon as={FaMapMarkerAlt} color="brand.secondary" w={5} h={5} mt={1} />
-                  <Text color="brand.neutral.dark">{clinicInfo.address}</Text>
+                  <Text color="text.default">{clinicInfo.address}</Text>
                 </HStack>
                 <HStack>
                   <Icon as={FaPhone} color="brand.secondary" w={5} h={5} />
@@ -141,12 +150,12 @@ const ContactPage = () => {
                     {clinicInfo.email}
                   </Link>
                 </HStack>
-                <Divider my={3}/>
+                <Divider my={3} borderColor="border.default"/>
                 <Heading as="h4" size="md" color="brand.primary">Clinic Hours</Heading>
                 {clinicInfo.hours && clinicInfo.hours.map((item, index) => (
                    <HStack key={index} w="full" justifyContent="space-between">
-                     <Text fontWeight="medium" color="brand.neutral.dark">{item.days}:</Text>
-                     <Text color="brand.neutral.dark">{item.time}</Text>
+                     <Text fontWeight="medium" color="text.default">{item.days}:</Text>
+                     <Text color="text.default">{item.time}</Text>
                    </HStack>
                 ))}
               </VStack>
@@ -154,24 +163,24 @@ const ContactPage = () => {
               <VStack spacing={4} align="stretch" as="form" onSubmit={handleSubmit}>
                 <Heading as="h3" size="lg" color="brand.primary" mb={2}>Send Us a Message</Heading>
                 <FormControl isRequired id="contact-name">
-                  <FormLabel color="brand.neutral.dark">Full Name</FormLabel>
-                  <Input type="text" name="name" value={formState.name} onChange={handleInputChange} focusBorderColor="brand.primary" bg="brand.neutral.extralight" />
+                  <FormLabel color="text.default">Full Name</FormLabel>
+                  <Input type="text" name="name" value={formState.name} onChange={handleInputChange} focusBorderColor="brand.primary" bg="bg.subtle" />
                 </FormControl>
                 <FormControl isRequired id="contact-email">
-                  <FormLabel color="brand.neutral.dark">Email Address</FormLabel>
-                  <Input type="email" name="email" value={formState.email} onChange={handleInputChange} focusBorderColor="brand.primary" bg="brand.neutral.extralight"/>
+                  <FormLabel color="text.default">Email Address</FormLabel>
+                  <Input type="email" name="email" value={formState.email} onChange={handleInputChange} focusBorderColor="brand.primary" bg="bg.subtle"/>
                 </FormControl>
                 <FormControl isRequired id="contact-subject">
-                  <FormLabel color="brand.neutral.dark">Subject</FormLabel>
-                  <Input type="text" name="subject" value={formState.subject} onChange={handleInputChange} focusBorderColor="brand.primary" bg="brand.neutral.extralight"/>
+                  <FormLabel color="text.default">Subject</FormLabel>
+                  <Input type="text" name="subject" value={formState.subject} onChange={handleInputChange} focusBorderColor="brand.primary" bg="bg.subtle"/>
                 </FormControl>
                 <FormControl isRequired id="contact-message">
-                  <FormLabel color="brand.neutral.dark">Message</FormLabel>
-                  <Textarea name="message" value={formState.message} onChange={handleInputChange} focusBorderColor="brand.primary" rows={5} bg="brand.neutral.extralight"/>
+                  <FormLabel color="text.default">Message</FormLabel>
+                  <Textarea name="message" value={formState.message} onChange={handleInputChange} focusBorderColor="brand.primary" rows={5} bg="bg.subtle"/>
                 </FormControl>
                 <Button 
                   type="submit" 
-                  colorScheme="primaryScheme" 
+                  colorScheme="brand.primary"
                   isLoading={isSubmitting}
                   loadingText="Sending..."
                   w={{ base: "full", md: "auto" }}

@@ -18,7 +18,7 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <Box bg="brand.neutral.dark" color="brand.neutral.light" py={10} fontFamily="body">
+    <Box bg="text.default" color="text.inverted" py={10} fontFamily="body">
       <Container maxW="container.xl">
         <SimpleGrid columns={{ base: 1, sm: 2, md: 4 }} spacing={8} mb={8}>
           {/* Column 1: Clinic Info */}
@@ -79,7 +79,7 @@ const Footer = () => {
           </Stack>
         </SimpleGrid>
 
-        <Divider borderColor="brand.neutral.gray" />
+        <Divider borderColor="border.default" />
 
         <Text pt={8} fontSize="sm" textAlign="center">
           &copy; {currentYear} VisionCare India. All Rights Reserved. Designed for a brighter vision.

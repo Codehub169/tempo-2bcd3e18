@@ -14,7 +14,7 @@ import {
   AlertIcon,
 } from '@chakra-ui/react';
 import { Link as RouterLink } from 'react-router-dom';
-import { FaUserMd, FaEye, FaUsers } from 'react-icons/fa'; // FaCalendarCheck, FaClinicMedical removed as not used in this version
+import { FaUserMd, FaEye, FaUsers } from 'react-icons/fa'; 
 import ServiceCard from '../components/ServiceCard';
 import DoctorCard from '../components/DoctorCard';
 import { getServices, getDoctors } from '../services/api'; 
@@ -39,7 +39,6 @@ const HomePage = () => {
       } catch (err) {
         console.error("Error fetching homepage data:", err);
         setError('Failed to load clinic highlights. Some information may be missing.');
-        // Set empty arrays on error to prevent breaking map functions, but still show error
         setServices([]); 
         setDoctors([]);
       }
@@ -48,7 +47,6 @@ const HomePage = () => {
     fetchData();
   }, []);
 
-  // Hero Section
   const HeroSection = () => (
     <Flex 
       align="center" 
@@ -61,30 +59,29 @@ const HomePage = () => {
       textAlign="center"
       px={{ base: 4, md: 6 }}
     >
-      <Box maxW={{ base: "md", md: "xl", lg: "2xl"}} bg="rgba(46, 134, 193, 0.7)" p={{base: 6, md:10}} borderRadius="lg" shadow="xl">
+      <Box maxW={{ base: "md", md: "xl", lg: "2xl"}} bg="rgba(33, 150, 243, 0.7)" p={{base: 6, md:10}} borderRadius="lg" shadow="xl">
         <Heading as="h1" size={{base: 'xl', md: '2xl', lg: '3xl'}} fontWeight="bold" mb={6} color="white">
           Your Vision, Our Priority.
-          <Text as="span" display="block" fontSize={{base: 'md', md: 'xl'}} fontWeight="normal" mt={2} color="brand.neutral.extralight">
+          <Text as="span" display="block" fontSize={{base: 'md', md: 'xl'}} fontWeight="normal" mt={2} color="neutral.lightGray">
             Leading Eye Care in India.
           </Text>
         </Heading>
-        <Text fontSize={{base: 'sm', md: 'lg'}} mb={8} opacity={0.95} color="brand.neutral.light">
+        <Text fontSize={{base: 'sm', md: 'lg'}} mb={8} opacity={0.95} color="neutral.white">
           Experience compassionate and comprehensive eye care with state-of-the-art technology and expert ophthalmologists at VisionCare India.
         </Text>
-        <Button as={RouterLink} to="/appointment" colorScheme="accentScheme" size="lg" px={{base:6, md:10}} py={{base:5, md:6}} _hover={{bg: "brand.accentHover"}}>
+        <Button as={RouterLink} to="/appointment" colorScheme="brand.accent" size="lg" px={{base:6, md:10}} py={{base:5, md:6}} _hover={{bg: "brand.accentHover"}}>
           Book an Appointment
         </Button>
       </Box>
     </Flex>
   );
 
-  // Services Overview Section
   const ServicesOverview = () => (
-    <Box py={{ base: 12, md: 16 }} bg="brand.neutral.extralight">
+    <Box py={{ base: 12, md: 16 }} bg="bg.subtle">
       <Container maxW="container.xl">
         <VStack spacing={4} textAlign="center" mb={12}>
           <Heading as="h2" size={{ base: "lg", md: "xl" }} color="brand.primary">Our Key Services</Heading>
-          <Text fontSize={{ base: "md", md: "lg" }} color="brand.neutral.dark" maxW="container.md" mx="auto">
+          <Text fontSize={{ base: "md", md: "lg" }} color="text.default" maxW="container.md" mx="auto">
             We offer a wide range of specialized eye care services to meet your needs, from routine exams to advanced surgical procedures.
           </Text>
         </VStack>
@@ -95,10 +92,10 @@ const HomePage = () => {
           </SimpleGrid>
         )}
         {!loading && services.length === 0 && !error && (
-            <Text textAlign="center" color="brand.neutral.dark">Services information is currently unavailable.</Text>
+            <Text textAlign="center" color="text.default">Services information is currently unavailable.</Text>
         )}
         <Box textAlign="center" mt={12}>
-          <Button as={RouterLink} to="/services" colorScheme="secondaryScheme" variant="outline" size="lg">
+          <Button as={RouterLink} to="/services" colorScheme="brand.secondary" variant="outline" size="lg">
             Explore All Services
           </Button>
         </Box>
@@ -106,13 +103,12 @@ const HomePage = () => {
     </Box>
   );
 
-  // Doctors Preview Section
   const DoctorsPreview = () => (
     <Box py={{ base: 12, md: 16 }} bg="white">
       <Container maxW="container.xl">
         <VStack spacing={4} textAlign="center" mb={12}>
           <Heading as="h2" size={{ base: "lg", md: "xl" }} color="brand.primary">Meet Our Expert Doctors</Heading>
-          <Text fontSize={{ base: "md", md: "lg" }} color="brand.neutral.dark" maxW="container.md" mx="auto">
+          <Text fontSize={{ base: "md", md: "lg" }} color="text.default" maxW="container.md" mx="auto">
             Our experienced and compassionate doctors are dedicated to providing the highest standard of eye care.
           </Text>
         </VStack>
@@ -123,10 +119,10 @@ const HomePage = () => {
           </SimpleGrid>
         )}
          {!loading && doctors.length === 0 && !error && (
-            <Text textAlign="center" color="brand.neutral.dark">Doctors information is currently unavailable.</Text>
+            <Text textAlign="center" color="text.default">Doctors information is currently unavailable.</Text>
         )}
         <Box textAlign="center" mt={12}>
-          <Button as={RouterLink} to="/doctors" colorScheme="primaryScheme" size="lg">
+          <Button as={RouterLink} to="/doctors" colorScheme="brand.primary" size="lg">
             View All Doctors
           </Button>
         </Box>
@@ -134,7 +130,6 @@ const HomePage = () => {
     </Box>
   );
 
-  // Why Choose Us Section
   const WhyChooseUs = () => {
     const reasons = [
       { icon: FaUserMd, title: 'Expert Medical Team', description: 'Highly qualified ophthalmologists dedicated to your eye health.' },
@@ -142,7 +137,7 @@ const HomePage = () => {
       { icon: FaUsers, title: 'Patient-Centric Care', description: 'Compassionate and personalized approach to meet your individual needs.' },
     ];
     return (
-      <Box py={{ base: 12, md: 16 }} bg="brand.neutral.extralight">
+      <Box py={{ base: 12, md: 16 }} bg="bg.subtle">
         <Container maxW="container.xl">
           <VStack spacing={4} textAlign="center" mb={12}>
             <Heading as="h2" size={{ base: "lg", md: "xl" }} color="brand.primary">Why Choose VisionCare India?</Heading>
@@ -152,7 +147,7 @@ const HomePage = () => {
               <VStack key={reason.title} bg="white" p={{base:6, md:8}} borderRadius="lg" shadow="md" spacing={4} align="center" textAlign="center" transition="all 0.3s ease-in-out" _hover={{transform: "translateY(-5px)", shadow: "lg"}}>
                 <Icon as={reason.icon} w={{base:10, md:12}} h={{base:10, md:12}} color="brand.secondary" />
                 <Heading as="h4" size="md" color="brand.primary">{reason.title}</Heading>
-                <Text color="brand.neutral.dark" fontSize="sm">{reason.description}</Text>
+                <Text color="text.default" fontSize="sm">{reason.description}</Text>
               </VStack>
             ))}
           </SimpleGrid>
@@ -161,15 +156,14 @@ const HomePage = () => {
     );
   };
 
-  // CTA Section
   const CTASection = () => (
     <Box py={{ base: 12, md: 16 }} bg="brand.primary" color="white">
       <Container maxW="container.md" textAlign="center">
         <Heading as="h2" size={{ base: "lg", md: "xl" }} mb={4} color="white">Ready for Clearer Vision?</Heading>
-        <Text fontSize={{ base: "md", md: "lg" }} mb={8} opacity={0.95} color="brand.neutral.light">
-          Don't wait to take care of your eyes. Schedule your consultation with our experts today.
+        <Text fontSize={{ base: "md", md: "lg" }} mb={8} opacity={0.95} color="neutral.lightGray">
+          Don\'t wait to take care of your eyes. Schedule your consultation with our experts today.
         </Text>
-        <Button as={RouterLink} to="/appointment" colorScheme="accentScheme" size="lg" px={{base:6, md:10}} py={{base:5, md:6}} _hover={{bg: "brand.accentHover"}}>
+        <Button as={RouterLink} to="/appointment" colorScheme="brand.accent" size="lg" px={{base:6, md:10}} py={{base:5, md:6}} _hover={{bg: "brand.accentHover"}}>
           Book Appointment Now
         </Button>
       </Container>

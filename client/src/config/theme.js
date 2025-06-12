@@ -1,4 +1,5 @@
 import { extendTheme } from '@chakra-ui/react';
+import { lighten } from 'polished'; // Using polished for lightening colors
 
 // Project-specific color palette
 const colors = {
@@ -7,10 +8,10 @@ const colors = {
   accent: '#FF9800',       // Orange - For prominent CTAs
   neutral: {
     white: '#FFFFFF',
-    lightGray: '#F5F5F5',  // Backgrounds, dividers
-    mediumLightGray: '#EEEEEE', // Borders, disabled states
-    gray: '#757575',       // Secondary text, icons
-    darkGray: '#212121',   // Primary text
+    lightGray: '#F5F5F5',  // For backgrounds
+    mediumLightGray: '#EEEEEE', // For borders, dividers
+    gray: '#757575',       // For secondary text, disabled states
+    darkGray: '#212121',   // For main text content, headings
   },
   semantic: {
     success: '#4CAF50',
@@ -30,17 +31,18 @@ const theme = extendTheme({
   colors: {
     brand: {
       primary: colors.primary,
+      primaryLight: lighten(0.15, colors.primary), // Defined primaryLight
       secondary: colors.secondary,
       accent: colors.accent,
+      accentHover: lighten(0.1, colors.accent), // For hover state on accent buttons
+      // Neutral colors are not directly under 'brand' but accessed via 'bg', 'text', 'border' or directly `colors.neutral.*`
     },
-    // You can also map specific semantic colors if needed, e.g., for alerts
     success: colors.semantic.success,
     warning: colors.semantic.warning,
     error: colors.semantic.error,
-    // Map neutral colors for easier access
     bg: {
       default: colors.neutral.white,
-      subtle: colors.neutral.lightGray,
+      subtle: colors.neutral.lightGray, // This is our 'extralight' equivalent
     },
     text: {
       default: colors.neutral.darkGray,
@@ -50,9 +52,10 @@ const theme = extendTheme({
     border: {
       default: colors.neutral.mediumLightGray,
     },
+    // Keep direct access to neutral palette if needed
+    neutral: colors.neutral, 
   },
   fonts,
-  // Example of global style overrides (optional)
   styles: {
     global: {
       'html, body': {
@@ -85,7 +88,7 @@ const theme = extendTheme({
               bg: 'brand.primary',
               color: 'neutral.white',
               _hover: {
-                bg: 'blue.600', // Darker shade of primary blue
+                bg: lighten(0.1, colors.primary), // Darker shade of primary blue
               },
             };
           }
@@ -94,7 +97,7 @@ const theme = extendTheme({
               bg: 'brand.secondary',
               color: 'neutral.white',
               _hover: {
-                bg: 'green.600', // Darker shade of secondary green
+                bg: lighten(0.1, colors.secondary), // Darker shade of secondary green
               },
             };
           }
@@ -103,7 +106,7 @@ const theme = extendTheme({
               bg: 'brand.accent',
               color: 'neutral.white',
               _hover: {
-                bg: 'orange.600', // Darker shade of accent orange
+                bg: 'brand.accentHover',
               },
             };
           }

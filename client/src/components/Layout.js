@@ -6,7 +6,7 @@ import Footer from './Footer';
 // Layout component to wrap all pages, including Navbar and Footer
 const Layout = ({ children }) => {
   return (
-    <Flex direction="column" minHeight="100vh" bg="brand.neutral.extralight">
+    <Flex direction="column" minHeight="100vh" bg="bg.subtle">
       {/* Navbar component at the top of every page */}
       <Navbar />
 

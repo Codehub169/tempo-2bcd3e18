@@ -4,12 +4,12 @@ const { getDb } = require('../db');
 exports.submitAppointment = (req, res) => {
     const {
         patientName,
-        patientEmail,
-        patientPhone,
-        serviceName, // Assuming service name is sent, can be serviceId
-        doctorName,  // Assuming doctor name is sent, can be doctorId
-        appointmentDate,
-        appointmentTime,
+        email: patientEmail, // Renamed from formData in client
+        phone: patientPhone, // Renamed from formData in client
+        service: serviceName, // Renamed from formData in client
+        preferredDoctor: doctorName,  // Renamed from formData in client
+        preferredDate: appointmentDate, // Renamed from formData in client
+        preferredTime: appointmentTime, // Renamed from formData in client
         reason
     } = req.body;
 
@@ -24,10 +24,10 @@ exports.submitAppointment = (req, res) => {
         return res.status(400).json({ message: 'Invalid email format.' });
     }
 
-    // Basic phone validation (e.g., 10 digits for India, can be more specific)
-    const phoneRegex = /^\d{10}$/;
+    // Indian phone validation (10 digits starting with 7,8,9, optional +91)
+    const phoneRegex = /^(\+91[\-\s]?)?[0]?(91)?[789]\d{9}$/;
     if (!phoneRegex.test(patientPhone.replace(/\s+/g, ''))) { // Remove spaces before testing
-        return res.status(400).json({ message: 'Invalid phone number format. Please enter a 10-digit phone number.' });
+        return res.status(400).json({ message: 'Invalid phone number format. Please enter a valid 10-digit Indian mobile number.' });
     }
 
     const db = getDb();

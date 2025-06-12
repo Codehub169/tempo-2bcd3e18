@@ -3,7 +3,8 @@ const { getDb } = require('../db');
 // Controller to get services
 exports.getServices = (req, res) => {
     const db = getDb();
-    let query = 'SELECT id, name, description, iconKey FROM services ORDER BY name ASC'; // Added iconKey and ordering
+    // Added iconKey, detailsLink and ordering
+    let query = 'SELECT id, name, description, iconKey, detailsLink FROM services ORDER BY name ASC'; 
     const params = [];
 
     if (req.query.limit) {
@@ -11,7 +12,7 @@ exports.getServices = (req, res) => {
         if (isNaN(limit) || limit <= 0) {
             return res.status(400).json({ message: 'Invalid limit parameter. Must be a positive integer.' });
         }
-        query = 'SELECT id, name, description, iconKey FROM services ORDER BY name ASC LIMIT ?'; // Ensure ordering is maintained with LIMIT
+        query = 'SELECT id, name, description, iconKey, detailsLink FROM services ORDER BY name ASC LIMIT ?'; 
         params.push(limit);
     }
 
@@ -35,7 +36,7 @@ exports.getDoctors = (req, res) => {
         if (isNaN(limit) || limit <= 0) {
             return res.status(400).json({ message: 'Invalid limit parameter. Must be a positive integer.' });
         }
-        query = 'SELECT id, name, specialty, qualifications, imageUrl, bio FROM doctors ORDER BY name ASC LIMIT ?'; // Ensure ordering is maintained
+        query = 'SELECT id, name, specialty, qualifications, imageUrl, bio FROM doctors ORDER BY name ASC LIMIT ?'; 
         params.push(limit);
     }
 
@@ -51,21 +52,25 @@ exports.getDoctors = (req, res) => {
 // Controller to get general clinic information
 exports.getClinicInfo = (req, res) => {
     const db = getDb();
-    // Assuming clinic info is stored with id = 1 in clinic_info table
-    db.get('SELECT name, address, phone, email, hours_monday_saturday, hours_sunday, about_us_short, about_us_long, mission FROM clinic_info WHERE id = 1', (err, row) => {
+    // Fetching comprehensive fields including hero_title, hero_subtitle, etc.
+    db.get('SELECT id, name, address, phone, email, hours_monday_saturday, hours_sunday, hero_title, hero_subtitle, about_us_mission, about_us_history, about_us_values, about_us_short, about_us_long, mission FROM clinic_info WHERE id = 1', (err, row) => {
         if (err) {
             console.error('Error fetching clinic info:', err.message);
             return res.status(500).json({ message: 'Failed to retrieve clinic information.' });
         }
         if (!row) {
-            // Provide default fallback data if no record found, to prevent frontend breaking
             return res.status(404).json({
+                message: 'Clinic information not found.',
+                // Provide default fallback data to prevent frontend breaking
                 name: 'VisionCare India (Default)',
                 address: '123 Default Street, Default City, India',
                 phone: '+91 00000 00000',
                 email: 'contact@defaultclinic.com',
                 hours_monday_saturday: '9 AM - 6 PM',
                 hours_sunday: 'Closed',
+                hero_title: 'Your Vision, Our Priority (Default)',
+                hero_subtitle: 'Leading Eye Care in India (Default)',
+                about_us_mission: 'Our default mission statement.',
                 about_us_short: 'Default information about our clinic.',
                 about_us_long: 'More detailed default information about our clinic and values.',
                 mission: 'Our default mission statement.'

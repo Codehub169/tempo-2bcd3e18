@@ -20,7 +20,7 @@ const DoctorCard = ({ doctor }) => {
       borderRadius="lg"
       overflow="hidden"
       boxShadow="lg"
-      bg="white"
+      bg="white" // Uses bg.default implicitly via global styles or direct theme value
       transition="all 0.3s ease-in-out"
       _hover={{
         transform: 'translateY(-5px)',
@@ -40,10 +40,10 @@ const DoctorCard = ({ doctor }) => {
           <Tag size="md" variant="subtle" colorScheme="green" mt={2} mb={3} fontFamily="body">
             {specialty}
           </Tag>
-          <Text fontSize="sm" color="gray.600" fontStyle="italic" mb={3} fontFamily="body">
+          <Text fontSize="sm" color="text.light" fontStyle="italic" mb={3} fontFamily="body">
             {qualifications}
           </Text>
-          <Text fontSize="md" color="gray.700" noOfLines={4} flexGrow={1} fontFamily="body">
+          <Text fontSize="md" color="text.default" noOfLines={4} flexGrow={1} fontFamily="body">
             {bio}
           </Text>
         </Box>
@@ -51,7 +51,7 @@ const DoctorCard = ({ doctor }) => {
         <Button
           as={RouterLink}
           to={`/appointment?doctorId=${id}`}
-          colorScheme="secondary"
+          colorScheme="brand.secondary"
           variant="solid"
           fontFamily="body"
           w="full"

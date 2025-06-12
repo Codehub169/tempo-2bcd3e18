@@ -6,7 +6,7 @@ import ServicesPage from './pages/ServicesPage'; // Will be created in a future 
 import DoctorsPage from './pages/DoctorsPage'; // Will be created in a future batch
 import ContactPage from './pages/ContactPage'; // Will be created in a future batch
 import AppointmentPage from './pages/AppointmentPage'; // Will be created in a future batch
-// import NotFoundPage from './pages/NotFoundPage'; // Placeholder for 404 page
+import NotFoundPage from './pages/NotFoundPage'; // Placeholder for 404 page
 
 function App() {
   return (
@@ -18,7 +18,7 @@ function App() {
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/appointment" element={<AppointmentPage />} />
         {/* Add more routes here as needed, e.g., for individual doctor profiles or service details */}
-        {/* <Route path="*" element={<NotFoundPage />} /> */}
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Layout>
   );
